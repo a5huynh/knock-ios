@@ -9,12 +9,15 @@
 /* Begin PBXBuildFile section */
 		0F4A5B68262E06E500C98B79 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B67262E06E500C98B79 /* Tests_iOS.swift */; };
 		0F4A5B73262E06E500C98B79 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B72262E06E500C98B79 /* Tests_macOS.swift */; };
-		0F4A5B75262E06E500C98B79 /* knock_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4C262E06E300C98B79 /* knock_iosApp.swift */; };
-		0F4A5B76262E06E500C98B79 /* knock_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4C262E06E300C98B79 /* knock_iosApp.swift */; };
-		0F4A5B77262E06E500C98B79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4D262E06E300C98B79 /* ContentView.swift */; };
-		0F4A5B78262E06E500C98B79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4D262E06E300C98B79 /* ContentView.swift */; };
+		0F4A5B75262E06E500C98B79 /* knockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4C262E06E300C98B79 /* knockApp.swift */; };
+		0F4A5B76262E06E500C98B79 /* knockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4C262E06E300C98B79 /* knockApp.swift */; };
+		0F4A5B77262E06E500C98B79 /* DevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4D262E06E300C98B79 /* DevicesView.swift */; };
+		0F4A5B78262E06E500C98B79 /* DevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4D262E06E300C98B79 /* DevicesView.swift */; };
 		0F4A5B79262E06E500C98B79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4E262E06E500C98B79 /* Assets.xcassets */; };
 		0F4A5B7A262E06E500C98B79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4E262E06E500C98B79 /* Assets.xcassets */; };
+		0F4A5B8F262E080300C98B79 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F4A5B8E262E080300C98B79 /* CoreBluetooth.framework */; };
+		0F4A5B9A262E0BCA00C98B79 /* DeviceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B99262E0BCA00C98B79 /* DeviceData.swift */; };
+		0F4A5BA4262E1E6200C98B79 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5BA3262E1E6200C98B79 /* CardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,8 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0F4A5B4C262E06E300C98B79 /* knock_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = knock_iosApp.swift; sourceTree = "<group>"; };
-		0F4A5B4D262E06E300C98B79 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		0F4A5B4C262E06E300C98B79 /* knockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = knockApp.swift; sourceTree = "<group>"; };
+		0F4A5B4D262E06E300C98B79 /* DevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesView.swift; sourceTree = "<group>"; };
 		0F4A5B4E262E06E500C98B79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0F4A5B53262E06E500C98B79 /* knock-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "knock-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F4A5B56262E06E500C98B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,6 +52,9 @@
 		0F4A5B6E262E06E500C98B79 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F4A5B72262E06E500C98B79 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		0F4A5B74262E06E500C98B79 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0F4A5B8E262E080300C98B79 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
+		0F4A5B99262E0BCA00C98B79 /* DeviceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceData.swift; sourceTree = "<group>"; };
+		0F4A5BA3262E1E6200C98B79 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F4A5B8F262E080300C98B79 /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,21 +93,24 @@
 		0F4A5B46262E06E300C98B79 = {
 			isa = PBXGroup;
 			children = (
+				0F4A5B98262E0BBC00C98B79 /* Models */,
 				0F4A5B4B262E06E300C98B79 /* Shared */,
 				0F4A5B55262E06E500C98B79 /* iOS */,
 				0F4A5B5C262E06E500C98B79 /* macOS */,
 				0F4A5B66262E06E500C98B79 /* Tests iOS */,
 				0F4A5B71262E06E500C98B79 /* Tests macOS */,
 				0F4A5B54262E06E500C98B79 /* Products */,
+				0F4A5B8D262E080300C98B79 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		0F4A5B4B262E06E300C98B79 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				0F4A5B4C262E06E300C98B79 /* knock_iosApp.swift */,
-				0F4A5B4D262E06E300C98B79 /* ContentView.swift */,
 				0F4A5B4E262E06E500C98B79 /* Assets.xcassets */,
+				0F4A5BA3262E1E6200C98B79 /* CardView.swift */,
+				0F4A5B4D262E06E300C98B79 /* DevicesView.swift */,
+				0F4A5B4C262E06E300C98B79 /* knockApp.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -149,6 +159,22 @@
 				0F4A5B74262E06E500C98B79 /* Info.plist */,
 			);
 			path = "Tests macOS";
+			sourceTree = "<group>";
+		};
+		0F4A5B8D262E080300C98B79 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0F4A5B8E262E080300C98B79 /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0F4A5B98262E0BBC00C98B79 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0F4A5B99262E0BCA00C98B79 /* DeviceData.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,8 +334,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F4A5B77262E06E500C98B79 /* ContentView.swift in Sources */,
-				0F4A5B75262E06E500C98B79 /* knock_iosApp.swift in Sources */,
+				0F4A5B77262E06E500C98B79 /* DevicesView.swift in Sources */,
+				0F4A5B75262E06E500C98B79 /* knockApp.swift in Sources */,
+				0F4A5BA4262E1E6200C98B79 /* CardView.swift in Sources */,
+				0F4A5B9A262E0BCA00C98B79 /* DeviceData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,8 +345,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F4A5B78262E06E500C98B79 /* ContentView.swift in Sources */,
-				0F4A5B76262E06E500C98B79 /* knock_iosApp.swift in Sources */,
+				0F4A5B78262E06E500C98B79 /* DevicesView.swift in Sources */,
+				0F4A5B76262E06E500C98B79 /* knockApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

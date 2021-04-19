@@ -8,10 +8,12 @@
 import SwiftUI
 
 @main
-struct knock_iosApp: App {
+struct knockApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView {
+                DevicesView(devices: .constant(DeviceData.data))
+            }
         }
     }
 }
