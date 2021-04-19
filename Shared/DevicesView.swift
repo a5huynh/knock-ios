@@ -13,7 +13,9 @@ struct DevicesView: View {
     var body: some View {
         List {
             ForEach(devices) { device in
-                CardView(device: device)
+                NavigationLink(destination: DetailView()) {
+                    CardView(device: device)
+                }
             }
         }
         .navigationTitle("Devices")

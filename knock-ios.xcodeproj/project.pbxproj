@@ -18,6 +18,7 @@
 		0F4A5B8F262E080300C98B79 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F4A5B8E262E080300C98B79 /* CoreBluetooth.framework */; };
 		0F4A5B9A262E0BCA00C98B79 /* DeviceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B99262E0BCA00C98B79 /* DeviceData.swift */; };
 		0F4A5BA4262E1E6200C98B79 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5BA3262E1E6200C98B79 /* CardView.swift */; };
+		0F4A5BB2262E2BEC00C98B79 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		0F4A5B8E262E080300C98B79 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
 		0F4A5B99262E0BCA00C98B79 /* DeviceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceData.swift; sourceTree = "<group>"; };
 		0F4A5BA3262E1E6200C98B79 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 				0F4A5B4E262E06E500C98B79 /* Assets.xcassets */,
 				0F4A5BA3262E1E6200C98B79 /* CardView.swift */,
 				0F4A5B4D262E06E300C98B79 /* DevicesView.swift */,
+				0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */,
 				0F4A5B4C262E06E300C98B79 /* knockApp.swift */,
 			);
 			path = Shared;
@@ -337,6 +340,7 @@
 				0F4A5B77262E06E500C98B79 /* DevicesView.swift in Sources */,
 				0F4A5B75262E06E500C98B79 /* knockApp.swift in Sources */,
 				0F4A5BA4262E1E6200C98B79 /* CardView.swift in Sources */,
+				0F4A5BB2262E2BEC00C98B79 /* DetailView.swift in Sources */,
 				0F4A5B9A262E0BCA00C98B79 /* DeviceData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
