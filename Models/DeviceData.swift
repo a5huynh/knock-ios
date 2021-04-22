@@ -2,43 +2,62 @@
 //  DeviceData.swift
 //  knock-ios (iOS)
 //
-//  Created by Andrew Huynh on 4/19/21.
+//  Created by Andrew Huynh on 4/20/21.
 //
 
-import SwiftUI
+import Foundation
 
-class DeviceData: Identifiable {
-    let id: UUID
-    var title: String
-    var description: String
-    
-    init(id: UUID = UUID(), title: String, description: String) {
-        self.id = id
-        self.title = title
-        self.description = description
-    }
-}
-
-extension DeviceData {
-    static var data: [DeviceData] {
-        [
-            DeviceData(
-                title: "ESP32 Test",
-                description: "Proximity sensor."),
-            DeviceData(
-                title: "Sensible Pantry",
-                description: "Level sensor for your pantry.")
-        ]
-    }
-}
-
-extension DeviceData {
-    struct Data {
-        var title: String = ""
-        var description: String = ""
+class DeviceData: ObservableObject {
+    private static var documentsFolder: URL {
+        do {
+            return try FileManager.default.url(
+                for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
+        } catch {
+            fatalError("Can't find documents directory")
+        }
     }
     
-    var data: Data {
-        return Data(title: title, description: description)
+    private static var fileURL: URL {
+        return documentsFolder.appendingPathComponent("scrums.data")
+    }
+    
+    @Published var devices: [Device] = []
+    
+    func load() {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let data = try? Data(contentsOf: Self.fileURL) else {
+                #if DEBUG
+                DispatchQueue.main.async {
+                    self?.devices = Device.data
+                }
+                #endif
+                return
+            }
+            
+            guard let devices = try? JSONDecoder().decode([Device].self, from: data) else {
+                fatalError("Can't decode saved scrum data.")
+            }
+            
+            DispatchQueue.main.async {
+                self?.devices = devices
+            }
+        }
+    }
+    
+    func save() {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+           guard let scrums = self?.devices else { fatalError("Self out of scope") }
+           guard let data = try? JSONEncoder().encode(scrums) else { fatalError("Error encoding data") }
+           do {
+               let outfile = Self.fileURL
+               try data.write(to: outfile)
+           } catch {
+               fatalError("Can't write to file")
+           }
+        }
     }
 }

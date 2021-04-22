@@ -9,10 +9,12 @@ import SwiftUI
 
 @main
 struct knockApp: App {
+    @ObservedObject private var data = DeviceData()
+    
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                DevicesView(devices: .constant(DeviceData.data))
+                DevicesView(knownDevices: $data.devices)
             }
         }
     }
