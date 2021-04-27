@@ -8,7 +8,7 @@
 import CoreBluetooth
 import SwiftUI
 
-class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
+class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, ObservableObject {
     
     static let sharedInstance: Scanner = {
         let instance = Scanner()
@@ -19,8 +19,12 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
     private var onConnect: ((Device) -> ())?
     
     @Published var peripherals: [Device] = []
+    @Published var connected: [Device] = []
     
-    private var scanned: [CBPeripheral] = []
+    // Should have a 1-to-1 mapping to devices in peripherals
+    private var _cbScanned: [CBPeripheral] = []
+    // Should have a 1-to-1 mapping to devices in connected
+    private var _cbConnected: [CBPeripheral] = []
     private var isScannable: Bool = false
     
     public override init() {
@@ -30,7 +34,7 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
     }
     
     // MARK: - Public funcs
-    func startScan(onConnect: @escaping (Device) -> Void) {
+    func startScan(onConnect: @escaping (Device) -> Void = { device in }) {
         if isScannable {
             print("START scanning")
             centralManager.scanForPeripherals(withServices: [CBUUID.init(string: "beefcafe-36e1-4688-b7f5-000000000000")])
@@ -42,11 +46,15 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
         print("STOP scanning")
         centralManager.stopScan()
         self.onConnect = nil
+        
+        // Clear out lists when we're finished scanning
+        self.peripherals.removeAll()
+        self._cbScanned.removeAll()
     }
     
     func connect(identifier: UUID, onConnect: () -> () = {}) {
-        print("Connecting to \(identifier)")
-        guard let peripheral = scanned.first(where: { $0.identifier == identifier }) else {
+        print("Attempting to connect: \(identifier)")
+        guard let peripheral = _cbScanned.first(where: { $0.identifier == identifier }) else {
             print("unable to connect to device")
             return
         }
@@ -55,27 +63,49 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
             print("unable to find device")
             return
         }
+        
         peripherals[deviceIndex].updateDeviceState(to: .connecting)
         self.objectWillChange.send()
         
         centralManager.connect(peripheral)
     }
     
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        guard let index = self._cbConnected.firstIndex(where: { $0.identifier == peripheral.identifier }) else {
+            return
+        }
+        
+        self._cbConnected.remove(at: index)
+    }
+        
     // MARK: - CBCentralManagerDelegate funcs
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        print("connected to \(peripheral.identifier)")
+        print("didConnect: \(peripheral.identifier)")
         guard let deviceIndex = peripherals.firstIndex(where: { $0.id == peripheral.identifier }) else {
             print("unable to find device")
             return
         }
         
-        var device = peripherals[deviceIndex];
         // Update the device status
-        device.updateDeviceState(to: .connected)
-        // Let scanner delegate know we've connected to a device
-        self.onConnect?(device)
+        print("didConnect: Updating device status")
+        peripherals[deviceIndex].updateDeviceState(to: .connected)
         // Let any listeners to this class know we've updated the peripherals
         self.objectWillChange.send()
+
+        // Add to list of connected devices
+        print("didConnect: Adding to list of connected devices")
+        if !self._cbConnected.contains(where: { $0.identifier == peripheral.identifier }) {
+            self._cbConnected.append(peripheral)
+            self.connected.append(peripherals[deviceIndex])
+        }
+        
+        // Let scanner delegate know we've connected to a device
+        print("didConnect: Notifying delegates")
+        self.onConnect?(peripherals[deviceIndex])
+        
+        // Discover services for this peripheral
+        peripheral.delegate = self
+        peripheral.discoverServices(nil)
     }
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -96,7 +126,7 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
             print("central.state is poweredOff")
             isScannable = false
         case .poweredOn:
-            print("central.state is poweredOn")
+             print("central.state is poweredOn")
             isScannable = true
         @unknown default:
             print("unknown value")
@@ -106,9 +136,11 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         // Have we added this already?
+        print("didDiscover: \(peripheral.identifier)")
         if !peripherals.contains(where: { $0.id == peripheral.identifier }) {
+            
             if let name = peripheral.name {
-                scanned.append(peripheral)
+                _cbScanned.append(peripheral)
                 peripherals.append(
                     Device(
                         id: peripheral.identifier,
@@ -117,6 +149,14 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
                 )
                 self.objectWillChange.send()
             }
+        }
+    }
+    
+    // MARK: - CBPeriperhalDelegate funcs
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        guard let services = peripheral.services else { return }
+        for service in services {
+            print(service)
         }
     }
 }

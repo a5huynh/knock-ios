@@ -42,21 +42,3 @@ extension Device {
         ]
     }
 }
-
-extension Device {
-    struct Data {
-        var title: String = ""
-        var description: String = ""
-        var deviceState: DeviceState = .disconnected
-    }
-    
-    var data: Data {
-        return Data(title: title, description: description, deviceState: deviceState)
-    }
-    
-    mutating func update(from data: Data) {
-        title = data.title
-        description = data.description
-        deviceState = data.deviceState
-    }
-}

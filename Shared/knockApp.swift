@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct knockApp: App {
     @ObservedObject private var data = DeviceData()
+    var scanner = Scanner.sharedInstance
     
     var body: some Scene {
         WindowGroup {

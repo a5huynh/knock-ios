@@ -17,10 +17,20 @@ struct DevicesView: View {
     var body: some View {
         List {
             ForEach(knownDevices) { device in
-                NavigationLink(destination: DetailView()) {
+                NavigationLink(destination: DetailView(device: device)
+                    // Start scan so we can pull info about this peripheral
+                    .onAppear { scanner.startScan() }
+                    .onDisappear { scanner.stopScan() }
+                ) {
                     CardView(device: device)
                 }
             }
+            .onDelete(perform: { indexSet in
+                // remove from known devices list
+                for i in indexSet {
+                    knownDevices.remove(at: i)
+                }
+            })
         }
         .navigationTitle("Devices")
         .navigationBarItems(trailing: Button(action: { isPresented = true }) {

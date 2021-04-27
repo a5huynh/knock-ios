@@ -12,7 +12,6 @@
 		0F4A5B75262E06E500C98B79 /* knockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4C262E06E300C98B79 /* knockApp.swift */; };
 		0F4A5B76262E06E500C98B79 /* knockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4C262E06E300C98B79 /* knockApp.swift */; };
 		0F4A5B77262E06E500C98B79 /* DevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4D262E06E300C98B79 /* DevicesView.swift */; };
-		0F4A5B78262E06E500C98B79 /* DevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4D262E06E300C98B79 /* DevicesView.swift */; };
 		0F4A5B79262E06E500C98B79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4E262E06E500C98B79 /* Assets.xcassets */; };
 		0F4A5B7A262E06E500C98B79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F4A5B4E262E06E500C98B79 /* Assets.xcassets */; };
 		0F4A5B8F262E080300C98B79 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F4A5B8E262E080300C98B79 /* CoreBluetooth.framework */; };
@@ -100,6 +99,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0F2C4CD82637CAEB00AE07EB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0F4A5BA3262E1E6200C98B79 /* CardView.swift */,
+				0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */,
+				0F4A5B4D262E06E300C98B79 /* DevicesView.swift */,
+				0F4A5BC1262F43BD00C98B79 /* ScannerCardView.swift */,
+				0F4A5BB7262E2D4300C98B79 /* ScannerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		0F4A5B46262E06E300C98B79 = {
 			isa = PBXGroup;
 			children = (
@@ -118,13 +129,9 @@
 			isa = PBXGroup;
 			children = (
 				0F4A5B4E262E06E500C98B79 /* Assets.xcassets */,
-				0F4A5BA3262E1E6200C98B79 /* CardView.swift */,
-				0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */,
-				0F4A5B4D262E06E300C98B79 /* DevicesView.swift */,
 				0F4A5B4C262E06E300C98B79 /* knockApp.swift */,
 				0FFAAF40262F48FF00DA706E /* Scanner.swift */,
-				0F4A5BC1262F43BD00C98B79 /* ScannerCardView.swift */,
-				0F4A5BB7262E2D4300C98B79 /* ScannerView.swift */,
+				0F2C4CD82637CAEB00AE07EB /* Views */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -365,7 +372,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F4A5B78262E06E500C98B79 /* DevicesView.swift in Sources */,
 				0F4A5B76262E06E500C98B79 /* knockApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
