@@ -9,12 +9,14 @@ import CoreBluetooth
 import SwiftUI
 
 class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
+    
     static let sharedInstance: Scanner = {
         let instance = Scanner()
         return instance
     }()
     
     var centralManager: CBCentralManager!
+    private var onConnect: ((Device) -> ())?
     
     @Published var peripherals: [Device] = []
     
@@ -28,16 +30,18 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
     }
     
     // MARK: - Public funcs
-    func startScan() {
+    func startScan(onConnect: @escaping (Device) -> Void) {
         if isScannable {
             print("START scanning")
             centralManager.scanForPeripherals(withServices: [CBUUID.init(string: "beefcafe-36e1-4688-b7f5-000000000000")])
+            self.onConnect = onConnect
         }
     }
     
     func stopScan() {
         print("STOP scanning")
         centralManager.stopScan()
+        self.onConnect = nil
     }
     
     func connect(identifier: UUID, onConnect: () -> () = {}) {
@@ -64,7 +68,13 @@ class Scanner: NSObject, CBCentralManagerDelegate, ObservableObject {
             print("unable to find device")
             return
         }
-        peripherals[deviceIndex].updateDeviceState(to: .connected)
+        
+        var device = peripherals[deviceIndex];
+        // Update the device status
+        device.updateDeviceState(to: .connected)
+        // Let scanner delegate know we've connected to a device
+        self.onConnect?(device)
+        // Let any listeners to this class know we've updated the peripherals
         self.objectWillChange.send()
     }
     

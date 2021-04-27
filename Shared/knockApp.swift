@@ -14,7 +14,12 @@ struct knockApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                DevicesView(knownDevices: $data.devices)
+                DevicesView(knownDevices: $data.devices) {
+                    data.save()
+                }
+            }
+            .onAppear {
+                data.load()
             }
         }
     }

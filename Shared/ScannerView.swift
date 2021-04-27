@@ -10,12 +10,15 @@ import SwiftUI
 struct ScannerView: View {
     @ObservedObject var scanner = Scanner.sharedInstance
     @State var _extraDevices: [Device] = []
+    @Binding var knownDevices: [Device]
     
     var body: some View {
         if scanner.peripherals.count > 0 || _extraDevices.count > 0 {
             List {
                 ForEach(scanner.peripherals + _extraDevices) { device in
-                    ScannerCardView(device: binding(for: device))
+                    if knownDevices.first(where: { $0.id == device.id }) == nil {
+                        ScannerCardView(device: binding(for: device))
+                    }
                 }
             }
             .navigationTitle("Matching Devices")
@@ -42,12 +45,12 @@ struct ScannerView: View {
 struct ScannerView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            ScannerView(_extraDevices: Device.data)
+            ScannerView(_extraDevices: Device.data, knownDevices: .constant([]))
                 .previewDisplayName("With devices found")
         }
         
         NavigationView {
-            ScannerView()
+            ScannerView(knownDevices: .constant([]))
                 .previewDisplayName("No devices found / currently scanning")
         }
     }
