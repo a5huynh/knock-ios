@@ -21,7 +21,7 @@ struct ScannerView: View {
                     }
                 }
             }
-            .navigationTitle("Matching Devices")
+            .navigationTitle("Nearby Devices")
         } else {
             VStack {
                 Image(systemName: "antenna.radiowaves.left.and.right")

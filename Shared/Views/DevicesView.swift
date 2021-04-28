@@ -19,7 +19,10 @@ struct DevicesView: View {
             ForEach(knownDevices) { device in
                 NavigationLink(destination: DetailView(device: device)
                     // Start scan so we can pull info about this peripheral
-                    .onAppear { scanner.startScan() }
+                    .onAppear {
+                        print("Detail for: \(device.id)")
+                        scanner.startScan()
+                    }
                     .onDisappear { scanner.stopScan() }
                 ) {
                     CardView(device: device)
@@ -32,7 +35,7 @@ struct DevicesView: View {
                 }
             })
         }
-        .navigationTitle("Devices")
+        .navigationTitle("Saved")
         .navigationBarItems(trailing: Button(action: { isPresented = true }) {
             Label("Add Device", systemImage: "plus")
         })

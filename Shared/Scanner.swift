@@ -19,13 +19,24 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
     private var onConnect: ((Device) -> ())?
     
     @Published var peripherals: [Device] = []
-    @Published var connected: [Device] = []
+    @Published var connectedPeripheral: CBPeripheral?
+    @Published var characteristics: [String: [CBCharacteristic]] = [:]
+    @Published var services: [CBService] = []
     
     // Should have a 1-to-1 mapping to devices in peripherals
     private var _cbScanned: [CBPeripheral] = []
-    // Should have a 1-to-1 mapping to devices in connected
-    private var _cbConnected: [CBPeripheral] = []
     private var isScannable: Bool = false
+    
+    // Characteristics for the currently connected peripheral
+    private var _cbCharacteristics: [CBCharacteristic] = []
+    // Services for the currently connected periperhal
+    private var _cbServices: [CBService] = []
+    
+    public static var SERVICE_TRANSPORT_DISCOVERY = CBUUID.init(string: "0x1824");
+    public static var CHAR_WIFI_SSID = CBUUID.init(string: "beefcafe-36e1-4688-b7f5-000000000001")
+    public static var CHAR_WIFI_PASS = CBUUID.init(string: "beefcafe-36e1-4688-b7f5-000000000002")
+    public static var CHAR_WIFI_STATUS = CBUUID.init(string: "beefcafe-36e1-4688-b7f5-000000000003")
+    public static var CHAR_WIFI_START = CBUUID.init(string: "beefcafe-36e1-4688-b7f5-000000000004")
     
     public override init() {
         super.init()
@@ -37,7 +48,7 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
     func startScan(onConnect: @escaping (Device) -> Void = { device in }) {
         if isScannable {
             print("START scanning")
-            centralManager.scanForPeripherals(withServices: [CBUUID.init(string: "beefcafe-36e1-4688-b7f5-000000000000")])
+            centralManager.scanForPeripherals(withServices: [Scanner.SERVICE_TRANSPORT_DISCOVERY])
             self.onConnect = onConnect
         }
     }
@@ -70,15 +81,47 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
         centralManager.connect(peripheral)
     }
     
-    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        guard let index = self._cbConnected.firstIndex(where: { $0.identifier == peripheral.identifier }) else {
+    func isConnected(to: UUID) -> Bool {
+        guard let peripheral = self.connectedPeripheral else { return false }
+        return peripheral.identifier == to
+    }
+    
+    func isNearby(identifier: UUID) -> Bool {
+        return self.peripherals.contains(where: { $0.id == identifier })
+    }
+    
+    func sendData() {
+        guard let peripheral = self.connectedPeripheral else {
+            print("not connected to any device")
             return
         }
         
-        self._cbConnected.remove(at: index)
+        guard let data = "seriously 2.4".data(using: .utf8) else { return }
+        if let char = self.characteristics[Scanner.SERVICE_TRANSPORT_DISCOVERY.uuidString]?.first(where: { Scanner.CHAR_WIFI_SSID == $0.uuid }) {
+            peripheral.writeValue(data, for: char, type: .withResponse)
+        }
+        
+        guard let data = "bearrepublic".data(using: .utf8) else { return }
+        if let char = self.characteristics[Scanner.SERVICE_TRANSPORT_DISCOVERY.uuidString]?.first(where: { Scanner.CHAR_WIFI_PASS == $0.uuid }) {
+            peripheral.writeValue(data, for: char, type: .withResponse)
+        }
+        
+        var value = Bool(true)
+        let startData = Data(bytes: &value, count: 1)
+        if let char = self.characteristics[Scanner.SERVICE_TRANSPORT_DISCOVERY.uuidString]?.first(where: { Scanner.CHAR_WIFI_START == $0.uuid }) {
+            peripheral.writeValue(startData, for: char, type: .withResponse)
+        }
+        
+    }
+    
+    // MARK: - CBCentralManagerDelegate funcs
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        self.connectedPeripheral = nil
+        self.services.removeAll()
+        self.characteristics.removeAll()
+        self.objectWillChange.send()
     }
         
-    // MARK: - CBCentralManagerDelegate funcs
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         print("didConnect: \(peripheral.identifier)")
         guard let deviceIndex = peripherals.firstIndex(where: { $0.id == peripheral.identifier }) else {
@@ -93,11 +136,8 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
         self.objectWillChange.send()
 
         // Add to list of connected devices
-        print("didConnect: Adding to list of connected devices")
-        if !self._cbConnected.contains(where: { $0.identifier == peripheral.identifier }) {
-            self._cbConnected.append(peripheral)
-            self.connected.append(peripherals[deviceIndex])
-        }
+        print("didConnect: Set device as connected")
+        self.connectedPeripheral = peripheral
         
         // Let scanner delegate know we've connected to a device
         print("didConnect: Notifying delegates")
@@ -126,7 +166,7 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
             print("central.state is poweredOff")
             isScannable = false
         case .poweredOn:
-             print("central.state is poweredOn")
+            print("central.state is poweredOn")
             isScannable = true
         @unknown default:
             print("unknown value")
@@ -154,9 +194,66 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
     
     // MARK: - CBPeriperhalDelegate funcs
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        print("didDiscoverServices: \(peripheral.identifier)")
+        if error != nil {
+            print("didDiscoverServices error: \(error?.localizedDescription ?? "N/A")")
+            return
+        }
+        
         guard let services = peripheral.services else { return }
         for service in services {
             print(service)
+            self.services.append(service)
+            peripheral.discoverCharacteristics(nil, for: service)
         }
+        
+        self.objectWillChange.send()
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        guard let characteristics = service.characteristics else {
+            return
+        }
+        
+        for characteristic in characteristics {
+            print(characteristic)
+            self.characteristics[service.uuid.uuidString] = characteristics
+            if characteristic.uuid == Scanner.CHAR_WIFI_STATUS {
+                peripheral.setNotifyValue(true, for: characteristic)
+            } else {
+                peripheral.readValue(for: characteristic)
+            }
+        }
+        
+        self.objectWillChange.send()
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        if error != nil {
+            print("didWriteValueFor: \(String(describing: error))")
+        }
+        
+        print("didWriteValueFor: \(peripheral) | \(characteristic)")
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        if characteristic.uuid == Scanner.CHAR_WIFI_STATUS {
+            guard let value = characteristic.value else { return }
+            let byteArray = [UInt8](value)
+            if (byteArray[0] == 3) {
+                print("[didUpdateValueFor] Device connected to WiFi!")
+            } else {
+                print("[didUpdateValueFor] Device attempting to connect to WiFi...")
+            }
+        }
+        
+        
+        let serviceUUID = characteristic.service.uuid.uuidString 
+        guard let charIndex = self.characteristics[serviceUUID]?.firstIndex(where: { $0.uuid == characteristic.uuid }) else {
+            return
+        }
+        
+        self.characteristics[characteristic.service.uuid.uuidString]?[charIndex] = characteristic
+        self.objectWillChange.send()
     }
 }
