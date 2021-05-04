@@ -15,10 +15,10 @@ enum DeviceState: String, Codable {
 struct Device: Identifiable, Codable {
     let id: UUID
     var title: String
-    var description: String
+    var description: String?
     var deviceState: DeviceState
     
-    init(id: UUID = UUID(), title: String, description: String, deviceState: DeviceState = .disconnected) {
+    init(id: UUID = UUID(), title: String, description: String? = nil, deviceState: DeviceState = .disconnected) {
         self.id = id
         self.title = title
         self.description = description
@@ -35,7 +35,7 @@ extension Device {
         [
             Device(
                 title: "ESP32 Test",
-                description: "Proximity sensor."),
+                description: nil    ),
             Device(
                 title: "Sensible Pantry",
                 description: "Level sensor for your pantry.")

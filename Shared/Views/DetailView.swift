@@ -8,64 +8,56 @@
 import CoreBluetooth
 import SwiftUI
 
+struct ConfigureButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .font(.headline)
+            .foregroundColor(Color.white)
+            .padding()
+            .background(Color(.blue))
+            .cornerRadius(15.0)
+    }
+}
+
 struct DetailView: View {
     @ObservedObject var scanner = Scanner.sharedInstance
 
-    @State var ssid: String = "seriously 2.4"
+    @State var ssid: String = ""
     @State var password: String = ""
     
     var device: Device
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                // Already connected?
-                if scanner.isConnected(to: device.id) {
-                    Label("Connected", systemImage: "checkmark.circle.fill")
-                        .foregroundColor(.green)
-                // If not connected, can we detect this peripheral?
-                } else if let peripheral = scanner.peripherals.first(where: { $0.id == device.id }) {
-                    if peripheral.deviceState == .connecting {
-                        Label("Connecting", systemImage: "ellipsis.circle.fill")
-                    } else {
-                        Label("Not Connected", systemImage: "nosign")
-                            .foregroundColor(.red)
-                    }
-                // Not detected & not connected
-                } else {
-                    Label("Finding Device...", systemImage: "antenna.radiowaves.left.and.right")
-                        .foregroundColor(.gray)
-                }
-                Spacer()
-            }
-            .padding()
+            DeviceStatusView(device: device)
             
-            if scanner.isConnected(to: device.id) {
-                List {
-                    Section(header: Text("WiFi Settings")) {
-                        TextField("SSID", text: $ssid)
-                        SecureField("Password", text: $password)
-                        Button("Configure Device", action: {
-                            scanner.sendData()
-                        })
-                    }
+            List {
+                Section(header: Text("WiFi Settings")) {
+                    TextField("SSID", text: $ssid)
+                    SecureField("Password", text: $password)
+                    Button("Configure Device", action: {
+                        scanner.configureWiFi(ssid: ssid, password: password)
+                    })
                 }
-                .listStyle(InsetGroupedListStyle())
-            } else {
-                Text("Connect device to configure")
-                    .padding()
-                Spacer()
             }
-        
+            .listStyle(InsetGroupedListStyle())
+
         }
         .navigationBarItems(trailing:
-            Button("Connect", action: { scanner.connect(identifier: device.id) })
-                // Only enable button if we're able to find the device &
-                // it's not already connected
-                .disabled(
-                    !scanner.isNearby(identifier: device.id) ||
-                    scanner.isConnected(to: device.id)
-                )
+            Button(action: {
+                if scanner.isConnected(to: device.id) {
+                    scanner.disconnect()
+                } else {
+                    scanner.connect(identifier: device.id)
+                }
+            }) {
+                if scanner.isConnected(to: device.id) {
+                    Text("Disconnect")
+                } else {
+                    Text("Connect")
+                }
+            }
+                .disabled(!scanner.isNearby(identifier: device.id))
         )
         .navigationTitle(device.title)
     }

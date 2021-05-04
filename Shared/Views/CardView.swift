@@ -16,7 +16,10 @@ struct CardView: View {
                 .font(.headline)
             Spacer()
             HStack {
-                Label(device.description, systemImage: "info.circle.fill")
+                Label(
+                    device.description ?? device.id.uuidString,
+                    systemImage: "info.circle.fill"
+                )
                 Spacer()
             }
             .font(.caption)

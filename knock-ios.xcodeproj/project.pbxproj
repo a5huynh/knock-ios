@@ -20,6 +20,7 @@
 		0F4A5BB2262E2BEC00C98B79 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */; };
 		0F4A5BB8262E2D4300C98B79 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5BB7262E2D4300C98B79 /* ScannerView.swift */; };
 		0F4A5BC2262F43BD00C98B79 /* ScannerCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4A5BC1262F43BD00C98B79 /* ScannerCardView.swift */; };
+		0FB6E8FC263A51BF00B2CC75 /* DeviceStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FB6E8FB263A51BF00B2CC75 /* DeviceStatusView.swift */; };
 		0FFAAF41262F48FF00DA706E /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFAAF40262F48FF00DA706E /* Scanner.swift */; };
 		0FFAAF4F262FA26400DA706E /* DeviceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFAAF4E262FA26400DA706E /* DeviceData.swift */; };
 /* End PBXBuildFile section */
@@ -62,6 +63,7 @@
 		0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		0F4A5BB7262E2D4300C98B79 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		0F4A5BC1262F43BD00C98B79 /* ScannerCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerCardView.swift; sourceTree = "<group>"; };
+		0FB6E8FB263A51BF00B2CC75 /* DeviceStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStatusView.swift; sourceTree = "<group>"; };
 		0FFAAF40262F48FF00DA706E /* Scanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scanner.swift; sourceTree = "<group>"; };
 		0FFAAF4E262FA26400DA706E /* DeviceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -104,6 +106,7 @@
 			children = (
 				0F4A5BA3262E1E6200C98B79 /* CardView.swift */,
 				0F4A5BB1262E2BEC00C98B79 /* DetailView.swift */,
+				0FB6E8FB263A51BF00B2CC75 /* DeviceStatusView.swift */,
 				0F4A5B4D262E06E300C98B79 /* DevicesView.swift */,
 				0F4A5BC1262F43BD00C98B79 /* ScannerCardView.swift */,
 				0F4A5BB7262E2D4300C98B79 /* ScannerView.swift */,
@@ -360,6 +363,7 @@
 				0F4A5BC2262F43BD00C98B79 /* ScannerCardView.swift in Sources */,
 				0FFAAF41262F48FF00DA706E /* Scanner.swift in Sources */,
 				0F4A5B75262E06E500C98B79 /* knockApp.swift in Sources */,
+				0FB6E8FC263A51BF00B2CC75 /* DeviceStatusView.swift in Sources */,
 				0F4A5BA4262E1E6200C98B79 /* CardView.swift in Sources */,
 				0F4A5BB2262E2BEC00C98B79 /* DetailView.swift in Sources */,
 				0F4A5BB8262E2D4300C98B79 /* ScannerView.swift in Sources */,
