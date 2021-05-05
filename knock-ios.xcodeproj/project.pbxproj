@@ -537,7 +537,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.athlabs.knock-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.athlabs.knock;
 				PRODUCT_NAME = "knock-ios";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -559,7 +559,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.athlabs.knock-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.athlabs.knock;
 				PRODUCT_NAME = "knock-ios";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
