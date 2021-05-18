@@ -21,7 +21,7 @@ struct ConfigureButtonStyle: ButtonStyle {
 
 struct DetailView: View {
     @ObservedObject var scanner = Scanner.sharedInstance
-
+    
     @State var ssid: String = ""
     @State var password: String = ""
     
@@ -43,21 +43,22 @@ struct DetailView: View {
             .listStyle(InsetGroupedListStyle())
 
         }
-        .navigationBarItems(trailing:
-            Button(action: {
-                if scanner.isConnected(to: device.id) {
-                    scanner.disconnect()
-                } else {
-                    scanner.connect(identifier: device.id)
+        .navigationBarItems(
+            trailing:
+                Button(action: {
+                    if scanner.isConnected(to: device.id) {
+                        scanner.disconnect()
+                    } else {
+                        scanner.connect(identifier: device.id)
+                    }
+                }) {
+                    if scanner.isConnected(to: device.id) {
+                        Text("Disconnect")
+                    } else {
+                        Text("Connect")
+                    }
                 }
-            }) {
-                if scanner.isConnected(to: device.id) {
-                    Text("Disconnect")
-                } else {
-                    Text("Connect")
-                }
-            }
-                .disabled(!scanner.isNearby(identifier: device.id))
+                    .disabled(!scanner.isNearby(identifier: device.id))
         )
         .navigationTitle(device.title)
     }

@@ -16,7 +16,7 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
     }()
     
     var centralManager: CBCentralManager!
-    private var onConnect: ((Device) -> ())?
+    private var onDiscover: ((Device) -> ())?
     
     @Published var peripherals: [Device] = []
     @Published var connectedPeripheral: CBPeripheral?
@@ -46,18 +46,19 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
     }
     
     // MARK: - Public funcs
-    func startScan(onConnect: @escaping (Device) -> Void = { device in }) {
+    func startScan(onDiscover: @escaping (Device) -> Void = { device in }) {
         if isScannable {
             print("START scanning")
             centralManager.scanForPeripherals(withServices: [Scanner.SERVICE_TRANSPORT_DISCOVERY])
-            self.onConnect = onConnect
+            self.onDiscover = onDiscover
         }
     }
     
     func stopScan() {
         print("STOP scanning")
         centralManager.stopScan()
-        self.onConnect = nil
+        self.onDiscover = nil
+        self.peripherals.removeAll()
     }
     
     func connect(identifier: UUID, onConnect: () -> () = {}) {
@@ -141,10 +142,6 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
         print("[didConnect]: Set device as connected")
         self.connectedPeripheral = peripheral
         
-        // Let scanner delegate know we've connected to a device
-        print("[didConnect]: Notifying delegates")
-        self.onConnect?(peripherals[deviceIndex])
-        
         // Discover services for this peripheral
         peripheral.delegate = self
         peripheral.discoverServices(nil)
@@ -180,15 +177,14 @@ class Scanner: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate, Observa
         // Have we added this already?
         print("[didDiscover]: \(peripheral)")
         if !peripherals.contains(where: { $0.id == peripheral.identifier }) {
-            
             if let name = peripheral.name {
                 _cbScanned.append(peripheral)
-                peripherals.append(
-                    Device(
-                        id: peripheral.identifier,
-                        title: name
-                    )
+                let newDevice = Device(
+                    id: peripheral.identifier,
+                    title: name
                 )
+                peripherals.append(newDevice)
+                self.onDiscover?(newDevice)
                 self.objectWillChange.send()
             }
         }

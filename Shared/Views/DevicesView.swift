@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import PartialSheet
 
 struct DevicesView: View {
     @Binding public var knownDevices: [Device]
     @Environment(\.scenePhase) private var scenePhase
-    @State private var isPresented = false
-    var scanner = Scanner.sharedInstance
+    @EnvironmentObject var partialSheet: PartialSheetManager
+    @ObservedObject var scanner = Scanner.sharedInstance
+    @State private var discoveredDevice: Device?
+    
     let saveAction: () -> Void
 
     var body: some View {
@@ -36,32 +39,32 @@ struct DevicesView: View {
             })
         }
         .navigationTitle("Saved")
-        .navigationBarItems(trailing: Button(action: { isPresented = true }) {
-            Label("Add Device", systemImage: "plus")
-        })
-        .listStyle(PlainListStyle())
-        .sheet(isPresented: $isPresented) {
-         	   NavigationView {
-                    ScannerView(knownDevices: $knownDevices)
-                    .navigationBarItems(trailing: Button("Done") {
-                        isPresented = false
+        .navigationBarItems(
+            trailing:
+                Button(action: {
+                    scanner.startScan(onDiscover: { device in
+                        // Device not known?
+                        print("onDiscover: \(device), \(knownDevices.count)")
+                        if discoveredDevice == nil && !knownDevices.contains(where: { $0.id == device.id }){
+                            discoveredDevice = device
+                        }
                     })
-                    .onAppear {
-                        scanner.startScan(onConnect: { device in
-                            // Device not known?
-                            if knownDevices.first(where: { $0.id == device.id }) == nil {
-                                knownDevices.append(device)
-                            }
-                        })
-                    }
-                    .onDisappear {
+                    
+                    self.partialSheet.showPartialSheet({
+                        discoveredDevice = nil
                         scanner.stopScan()
+                    }) {
+                        AddDeviceView(device: $discoveredDevice)
                     }
-            }
-        }
+                }) {
+                    Label("Add Device", systemImage: "plus")
+                }
+        )
+        .listStyle(PlainListStyle())
         .onChange(of: scenePhase, perform: { phase in
             if phase == .inactive { saveAction() }
         })
+        .addPartialSheet()
     }
 }
 
